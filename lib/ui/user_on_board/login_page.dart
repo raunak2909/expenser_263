@@ -1,8 +1,10 @@
 import 'package:expense/data/local/exp_database.dart';
 import 'package:expense/domains/app_colors.dart';
+import 'package:expense/ui/user_on_board/login_provider/login_provider.dart';
 import 'package:expense/ui/user_on_board/sign_up_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../homes/dashboard.dart';
 
@@ -174,13 +176,14 @@ isPotrait(BuildContext context, ExpDatabase db, var tfEmail, var tfPass) {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)))),
                       onPressed: () async{
-                        List<Map<String,dynamic>> data =await db.loginAuthentication(emailId: tfEmail.text, pass: tfPass.text);
-                        if(data.isEmpty){
-
+                        bool check =await db.loginAuthentication(emailId: tfEmail.text, pass: tfPass.text);
+                      //  List<Map<String,dynamic>> data=await context.read<LoginProvider>().providerLoginAuthentication(email: tfEmail.text, pass: tfPass.text);
+                        if(check){
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Dashboard()));
                         }
                         else
                           {
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>Dashboard()));
+                           print("invalid");
                           }
                       }, child: Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -249,7 +252,7 @@ isPotrait(BuildContext context, ExpDatabase db, var tfEmail, var tfPass) {
                               child: Icon(Icons.account_circle,size: 55,),
                             )
                         ),
-                        /*Positioned(
+                        Positioned(
                            // top: 0,
                             right: 1,
                             child: Container(
@@ -263,7 +266,7 @@ isPotrait(BuildContext context, ExpDatabase db, var tfEmail, var tfPass) {
                                 Navigator.pop(context);
                               },),
                             )
-                        ),*/
+                        ),
 
                       ]);
                     },

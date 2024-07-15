@@ -1,10 +1,14 @@
+import 'package:expense/data/local/exp_database.dart';
+import 'package:expense/ui/user_on_board/login_provider/login_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'ui/homes/dashboard.dart';
 import 'ui/splash/splash_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(create: (context)=>LoginProvider(),
+    child: MyApp(),));
 }
 
 class MyApp extends StatelessWidget {

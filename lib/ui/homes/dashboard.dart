@@ -2,6 +2,8 @@ import 'package:expense/ui/homes/bottom_bar_widget/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../expense_managment/add_expenses.dart';
+
 class Dashboard extends StatefulWidget {
 
   @override
@@ -73,6 +75,7 @@ class _DashboardState extends State<Dashboard> {
             InkWell(child: currentIndex ==3 ? Icon(Icons.account_circle, color: bottomSelectItemClr,size: 35,) : Icon(Icons.account_circle, color: Colors.grey,),
                 onTap: (){
                   changeIndexvalue(index: 3);
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>AddExpenses()));
                 }),
 
             //REPLACE WITH ICON
