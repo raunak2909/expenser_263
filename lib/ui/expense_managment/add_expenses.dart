@@ -3,15 +3,29 @@ import 'package:expense/data/models/cat_model.dart';
 import 'package:expense/data/models/expense_model.dart';
 import 'package:expense/domains/app_constants.dart';
 import 'package:expense/domains/app_prefs.dart';
+import 'package:expense/ui/bloc/expense_bloc.dart';
+import 'package:expense/ui/bloc/expense_event.dart';
 import 'package:expense/ui/custom_widget/widgets_design.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddExpenses extends StatelessWidget {
 
   var tfControllerSpent=TextEditingController();
   ExpDatabase db=ExpDatabase.ExpDatabase_obj;
   bool categotyOptionVisible=false;
+  int selectedCategoryId = -1;
+  List<String> listType = ['Debit', 'Credit', 'Lend', 'Borrow'];
+  String selectedType = 'Debit';
+  num balance = 0;
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+  bool titleGiven = false;
+  bool descGiven = false;
+  DateFormat mFormat = DateFormat.yMMMd();
 
 
   @override
@@ -64,8 +78,7 @@ class AddExpenses extends StatelessWidget {
                       height: 21,
                     ),
                     categotyOptionVisible==true ?InkWell(
-                      child: Icon(Icons.category, size: 40,
-                      ),
+                      child: selectedCategoryId == -1 ? Icon(Icons.category, size: 40,) : Image.asset(AppConstants.mCategories.where((element) => element.catId==selectedCategoryId).toList()[0].catImgUrl!, width: 50, height: 50,),
                       onTap: () {
                         showModalBottomSheet(
                          // barrierColor: Colors.grey,
@@ -102,11 +115,18 @@ class AddExpenses extends StatelessWidget {
                                                 mainAxisSpacing: 10*/
                                             ),
                                             itemBuilder: (_,index){
-                                              return Column(
-                                                children: [
-                                                  //Image.asset(AppConstants.mCategories[index][])
-                                                  Icon(Icons.account_balance)
-                                                ],
+                                              return InkWell(
+                                                onTap: (){
+                                                  selectedCategoryId = AppConstants.mCategories[index].catId!;
+                                                  ss((){});
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    Image.asset(AppConstants.mCategories[index].catImgUrl!, width: 50, height: 50,),
+                                                    Text(AppConstants.mCategories[index].catName!)
+                                                  ],
+                                                ),
                                               );
                                             })
                                       ],
@@ -120,14 +140,66 @@ class AddExpenses extends StatelessWidget {
                     SizedBox(
                       height: 21,
                     ),
+                    selectedCategoryId!=-1 ? DropdownButton(
+                        items: listType.map((eachType){
+                      return DropdownMenuItem(
+                        value: eachType,
+                          child: Text(eachType));
+                    }).toList(), onChanged: (value){
+                      selectedType = value!;
+                      ss((){});
+                    }, value: selectedType,) : Container(),
+                    SizedBox(
+                      height: 21,
+                    ),
+                    selectedCategoryId!=-1? TextField(
+                      controller: titleController, onChanged: (value){
+                        if(value!=""){
+                          titleGiven = true;
+                        } else {
+                          titleGiven = false;
+                        }
+                        ss((){});
+                    },
+                    ) : Container(),
+                    titleGiven ? TextField(
+                      controller: descController,
+                      onChanged: (value){
+                        if(value!=""){
+                          descGiven = true;
+                        } else {
+                          descGiven = false;
+                        }
+                        ss((){});
+                      },
+                    ) : Container(),
+                    descGiven ? ElevatedButton(onPressed: () async{
+                     selectedDate = await showDatePicker(context: context, firstDate: DateTime(DateTime.now().year-2, 1, 1), lastDate: DateTime.now()) ?? DateTime.now();
+                     ss((){});
+                    }, child: Text(mFormat.format(selectedDate))) : Container(),
                     categotyOptionVisible==true ? ElevatedButton(onPressed: (){
 
-                      var prefs=AppPrefs();
-                      int uId=prefs.getUserId();
+                      /*var prefs=AppPrefs();
+                      int uId=prefs.getUserId();*/
 
-                      db.addUserExpense(ExpenseModel(userId: uId, catId: 1, expAmt: int.parse(tfControllerSpent.text), expBal: 1000, expTitle: 'Shopping', expDesc: 'Shopping', expType: "Coffee", expCreatedAt: '15-Jul-2024'));
-                      categotyOptionVisible=false;
-                      tfControllerSpent.clear();
+                      if(selectedCategoryId>0) {
+
+                        context.read<ExpenseBloc>().add(AddExpenseEvent(newExpense: ExpenseModel(
+                            catId: selectedCategoryId,
+                            expAmt: int.parse(tfControllerSpent.text),
+                            expBal: selectedType=='Debit' ? balance-int.parse(tfControllerSpent.text) : balance + int.parse(tfControllerSpent.text),
+                            expTitle: titleController.text.toString(),
+                            expDesc: descController.text.toString(),
+                            expType: selectedType,
+                            expCreatedAt: selectedDate.millisecondsSinceEpoch.toString())));
+
+                        categotyOptionVisible=false;
+                        tfControllerSpent.clear();
+                        titleController.clear();
+                        descController.clear();
+                        Navigator.pop(context);
+                      }
+
                     }, child: Text("Save")) : Container(),
                   ],
                 );

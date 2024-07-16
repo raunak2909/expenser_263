@@ -82,7 +82,7 @@ Future<bool> loginAuthentication({required String emailId,required String pass})
 
     var prefs=AppPrefs();
     prefs.initPrefs();
-   int id= prefs.getUserId();
+    int id= prefs.getUserId();
 
     var db=await getDB();
     List<Map<String,dynamic>> allExpenses =await db.query(TABLE_EXPENSE,where: "$COLUMN_NAME_LOGIN_TB_USER_ID = ?", whereArgs: ['$id']);
@@ -98,6 +98,8 @@ Future<bool> loginAuthentication({required String emailId,required String pass})
 
   Future<bool> addUserExpense(ExpenseModel newExpense) async{
     var db =await getDB();
+    var prefs=AppPrefs();
+    newExpense.userId = prefs.getUserId();
     //db.rawInsert("insert into ${}")
     int rowsInserted=await db.insert(TABLE_EXPENSE, newExpense.toMap());
     return rowsInserted>0;

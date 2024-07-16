@@ -14,7 +14,7 @@ class ExpenseModel{
   String? expType;
   String? expCreatedAt;
 
-ExpenseModel({this.expId, required this.userId, required this.catId, required this.expAmt, required this.expBal, required this.expTitle, required this.expDesc, required this.expType, required this.expCreatedAt});
+ExpenseModel({this.expId, this.userId, required this.catId, required this.expAmt, required this.expBal, required this.expTitle, required this.expDesc, required this.expType, required this.expCreatedAt});
 
  factory ExpenseModel.fromMap(Map<String,dynamic> map){
    return ExpenseModel(

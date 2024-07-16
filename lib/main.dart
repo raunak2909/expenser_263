@@ -1,13 +1,19 @@
 import 'package:expense/data/local/exp_database.dart';
+import 'package:expense/ui/bloc/expense_bloc.dart';
 import 'package:expense/ui/user_on_board/login_provider/login_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'ui/homes/dashboard.dart';
 import 'ui/splash/splash_page.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(create: (context)=>LoginProvider(),
+  runApp(MultiProvider(
+    providers: [
+      //ChangeNotifierProvider(create: (context)=>LoginProvider(),),
+      BlocProvider(create: (context) => ExpenseBloc(db: ExpDatabase.ExpDatabase_obj),)
+    ],
     child: MyApp(),));
 }
 
