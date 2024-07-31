@@ -22,6 +22,15 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState>{
       }
 
     });
+    
+    on<FetchAllExpenseEvent>((event, emit) async{
+      emit(ExpenseLoadingState());
+      
+      var allExpenses = await db.getUserExpenses();
+      
+      emit(ExpenseLoadedState(mExpenses: allExpenses));
+      
+    });
 
   }
 }

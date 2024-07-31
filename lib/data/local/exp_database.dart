@@ -66,12 +66,13 @@ class ExpDatabase {
 Future<bool> loginAuthentication({required String emailId,required String pass}) async
 {
   var db =await getDB();
-  List<Map<String,dynamic>> data = await db.rawQuery("select $COLUMN_NAME_LOGIN_TB_EMAIL,$COLUMN_NAME_LOGIN_TB_USER_ID from $TABLE_NAME_LOGIN_DETAILS where $COLUMN_NAME_LOGIN_TB_EMAIL='$emailId' and $COLUMN_NAME_LOGIN_TB_PASSWORD='$pass'");
+  List<Map<String,dynamic>> data = await db.rawQuery("select $COLUMN_NAME_LOGIN_TB_FNAME, $COLUMN_NAME_LOGIN_TB_EMAIL,$COLUMN_NAME_LOGIN_TB_USER_ID from $TABLE_NAME_LOGIN_DETAILS where $COLUMN_NAME_LOGIN_TB_EMAIL='$emailId' and $COLUMN_NAME_LOGIN_TB_PASSWORD='$pass'");
 
   if(data.isNotEmpty){
     var prefs=AppPrefs();
     prefs.initPrefs();
     prefs.setUserId(data[0][COLUMN_NAME_LOGIN_TB_USER_ID]);
+    //prefs.setUserName(data[0][COLUMN_NAME_LOGIN_TB_FNAME]);
   }
   return data.isNotEmpty;
 }

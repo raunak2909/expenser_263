@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppPrefs{
   SharedPreferences? prefs;
   static const String USER_ID_KEY="user_id";
+  static const String USER_NAME_KEY="user_name";
 
  Future<void> initPrefs() async{
     prefs =await SharedPreferences.getInstance();
@@ -36,4 +37,13 @@ class AppPrefs{
    }
 }
 
+ /* setUserName(String name){
+    try{
+      prefs!.setInt(USER_NAME_KEY, name);}
+    catch(e)
+    {
+      print('hllo');
+    }
+  }
+*/
 }

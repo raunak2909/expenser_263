@@ -3,7 +3,7 @@ import '../data/models/cat_model.dart';
 class AppConstants{
 
   static List<CatModel> mCategories = [
-    CatModel(catId: 1, catName: "Shopping", catImgUrl: "asset/icon/hawaiian-shirt.png"),
+    CatModel(catId: 1, catName: "Shopping", catImgUrl: "asset/icon/hawaiian-shirt.png",),
     CatModel(catId: 2, catName: "Coffee", catImgUrl: "asset/icon/coffee.png"),
     CatModel(catId: 3, catName: "FastFood", catImgUrl: "asset/icon/fast-food.png"),
     CatModel(catId: 4, catName: "Gift", catImgUrl: "asset/icon/gift-box.png"),
