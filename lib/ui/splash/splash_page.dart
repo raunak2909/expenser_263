@@ -15,7 +15,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-String? alreadyLoggedIn;
+String? alreadyLoggedIn = "home";
 
   @override
   void initState() {
@@ -24,7 +24,7 @@ String? alreadyLoggedIn;
 
     Timer(Duration(seconds: 1), () async{
     var pref =  await SharedPreferences.getInstance();
-    alreadyLoggedIn = pref.getString(SplashPage.loggedInRecordCheck);
+    //alreadyLoggedIn = pref.getString(SplashPage.loggedInRecordCheck);
     toJump();
     });
 

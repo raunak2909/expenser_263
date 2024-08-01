@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    context.read<ExpenseBloc>().add(FetchAllExpenseEvent());
+    //context.read<ExpenseBloc>().add(FetchAllExpenseEvent());
 
   }
 

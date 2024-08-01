@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense/data/local/exp_database.dart';
 import 'package:expense/data/models/cat_model.dart';
 import 'package:expense/data/models/expense_model.dart';
@@ -177,21 +178,43 @@ class AddExpenses extends StatelessWidget {
                      selectedDate = await showDatePicker(context: context, firstDate: DateTime(DateTime.now().year-2, 1, 1), lastDate: DateTime.now()) ?? DateTime.now();
                      ss((){});
                     }, child: Text(mFormat.format(selectedDate))) : Container(),
-                    categotyOptionVisible==true ? ElevatedButton(onPressed: (){
+                    categotyOptionVisible==true ? ElevatedButton(onPressed: () async{
 
                       /*var prefs=AppPrefs();
                       int uId=prefs.getUserId();*/
 
                       if(selectedCategoryId>0) {
 
-                        context.read<ExpenseBloc>().add(AddExpenseEvent(newExpense: ExpenseModel(
+                        /// firebase (add data)
+                        FirebaseFirestore mainFireDB = FirebaseFirestore.instance;
+
+                        CollectionReference expense = mainFireDB.collection('expenses');
+
+                        var docRef = await expense.add(
+                            ExpenseModel(
                             catId: selectedCategoryId,
                             expAmt: int.parse(tfControllerSpent.text),
                             expBal: selectedType=='Debit' ? balance-int.parse(tfControllerSpent.text) : balance + int.parse(tfControllerSpent.text),
                             expTitle: titleController.text.toString(),
                             expDesc: descController.text.toString(),
                             expType: selectedType,
-                            expCreatedAt: selectedDate.millisecondsSinceEpoch.toString())));
+                            expCreatedAt: selectedDate.millisecondsSinceEpoch.toString()).toMap()
+                        ).catchError((error) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text('Expense could not be added..${error.toString()}')));
+                        });
+
+                        print('Expense Added : ${docRef.id}');
+
+
+                        /*context.read<ExpenseBloc>().add(AddExpenseEvent(newExpense: ExpenseModel(
+                            catId: selectedCategoryId,
+                            expAmt: int.parse(tfControllerSpent.text),
+                            expBal: selectedType=='Debit' ? balance-int.parse(tfControllerSpent.text) : balance + int.parse(tfControllerSpent.text),
+                            expTitle: titleController.text.toString(),
+                            expDesc: descController.text.toString(),
+                            expType: selectedType,
+                            expCreatedAt: selectedDate.millisecondsSinceEpoch.toString())));*/
 
                         categotyOptionVisible=false;
                         tfControllerSpent.clear();
